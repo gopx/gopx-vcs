@@ -11,6 +11,7 @@ import (
 	"gopx.io/gopx-vcs/pkg/config"
 	"gopx.io/gopx-vcs/pkg/log"
 	"gopx.io/gopx-vcs/pkg/route"
+	"gopx.io/gopx-vcs/pkg/utils"
 )
 
 var serverLogger = l.New(os.Stdout, "", l.Ldate|l.Ltime|l.Lshortfile)
@@ -21,6 +22,28 @@ func init() {
 
 func main() {
 	startServer()
+}
+
+func test() {
+	f, err := os.Create("/Users/rousan/Works/bal/gcfg.tar.gz")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	err = utils.CompressTarGZ("/Users/rousan/go/src/github.com/src-d/gcfg", f, "gcfg")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	f.Close()
+
+	f, err = os.Open("/Users/rousan/Works/bal/gcfg.tar.gz")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	comment, err := utils.DecompressTarGZ("/Users/rousan/Works/bal/gcfg", f)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Info(comment)
 }
 
 func startServer() {

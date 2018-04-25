@@ -49,7 +49,6 @@ func cgiWd() string {
 func cgiEnv() []string {
 	return []string{
 		fmt.Sprintf("%s=%s", "GIT_PROJECT_ROOT", config.VCS.RepoRoot),
-		fmt.Sprintf("%s=%s", "GIT_HTTP_EXPORT_ALL", ""),
 		fmt.Sprintf("%s=%s", "GIT_HTTP_MAX_REQUEST_BUFFER", "10M"),
 	}
 }
