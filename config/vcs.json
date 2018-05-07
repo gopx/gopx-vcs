@@ -1,4 +1,5 @@
 {
   "repoRoot": "/Users/rousan/repo",
-  "CGIPath": "/Library/Developer/CommandLineTools/usr/libexec/git-core/git-http-backend"
+  "CGIPath": "/Library/Developer/CommandLineTools/usr/libexec/git-core/git-http-backend",
+  "repoExt": ".git"
 }

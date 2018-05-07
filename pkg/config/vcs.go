@@ -14,6 +14,7 @@ const VCSConfigPath = "./config/vcs.json"
 type VCSConfig struct {
 	RepoRoot string `json:"repoRoot"`
 	CGIPath  string `json:"CGIPath"`
+	RepoExt  string `json:"repoExt"`
 }
 
 // VCS holds loaded VCS related configurations.
