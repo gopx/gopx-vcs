@@ -18,16 +18,13 @@ func API(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	switch path := sanitizeAPIPath(r.URL.Path); {
+	path := r.URL.Path
+	switch {
 	case strings.HasPrefix(path, "/api/v1"):
 		v1.API(w, r)
 	default:
 		Error404(w, r)
 	}
-}
-
-func sanitizeAPIPath(path string) string {
-	return strings.ToLower(path)
 }
 
 func validateAPIRequest(w http.ResponseWriter, r *http.Request) bool {
