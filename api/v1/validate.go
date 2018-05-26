@@ -18,23 +18,39 @@ const (
 
 // ValidatePackageVersion checks whether the package version
 // is in valid format according to the semvar spec.
+// Ref: https://semver.org/
 func ValidatePackageVersion(version string) error {
 	_, err := semver.NewVersion(version)
 	return err
 }
 
-// ValidatePackageName checks whether the package name (and scoped package name)
+// ValidatePackageName checks whether the package name
 // meets the naming constraints.
 func ValidatePackageName(packageName string) error {
-	pkg, username, isScoped := splitPackageName(packageName)
-	if isScoped {
-		err := validateUsername(username)
-		if err != nil {
-			return err
-		}
-		return validateScopedPackageName(pkg)
+	ln := utf8.RuneCountInString(packageName)
+	if !(ln > 0 && ln < packageNameMaxLength) {
+		return errors.Errorf("Package name must be non-empty and maximum %d characters long", packageNameMaxLength)
 	}
-	return validateNormalPackageName(pkg)
+
+	if url.PathEscape(packageName) != packageName {
+		return errors.Errorf("Package name must not contain any non-url-safe character")
+	}
+
+	if strings.ToLower(packageName) != packageName {
+		return errors.Errorf("Package name must contain only lowercase charactars")
+	}
+
+	if strings.HasPrefix(packageName, ".") {
+		return errors.Errorf("Package name must not start with %c character", '.')
+	}
+
+	if matched, err := regexp.MatchString(`[@~\\/!'()*\s]`, packageName); err != nil {
+		return errors.Errorf("Package name couldn't be checked with regex")
+	} else if matched {
+		return errors.Errorf(`Package name must not contain any of these special characters: @, ~, \, /, !, ', (, ), *`)
+	}
+
+	return nil
 }
 
 func validateUsername(username string) error {
@@ -59,60 +75,6 @@ func validateUsername(username string) error {
 		return errors.Errorf("Username couldn't be checked with regex")
 	} else if matched {
 		return errors.Errorf(`Username must not contain any of these special characters: @, ~, \, /, !, ', (, ), *`)
-	}
-
-	return nil
-}
-
-func validateNormalPackageName(pkg string) error {
-	ln := utf8.RuneCountInString(pkg)
-	if !(ln > 0 && ln < packageNameMaxLength) {
-		return errors.Errorf("Package name must be non-empty and maximum %d characters long", packageNameMaxLength)
-	}
-
-	if url.PathEscape(pkg) != pkg {
-		return errors.Errorf("Package name must not contain any non-url-safe character")
-	}
-
-	if strings.ToLower(pkg) != pkg {
-		return errors.Errorf("Package name must contain only lowercase charactars")
-	}
-
-	if strings.HasPrefix(pkg, ".") {
-		return errors.Errorf("Package name must not start with %c character", '.')
-	}
-
-	if matched, err := regexp.MatchString(`[@~\\/!'()*\s]`, pkg); err != nil {
-		return errors.Errorf("Package name couldn't be checked with regex")
-	} else if matched {
-		return errors.Errorf(`Package name must not contain any of these special characters: @, ~, \, /, !, ', (, ), *`)
-	}
-
-	return nil
-}
-
-func validateScopedPackageName(pkg string) error {
-	ln := utf8.RuneCountInString(pkg)
-	if !(ln > 0 && ln < packageNameMaxLength) {
-		return errors.Errorf("Scoped Package name must be non-empty and maximum %d characters long", packageNameMaxLength)
-	}
-
-	if url.PathEscape(pkg) != pkg {
-		return errors.Errorf("Scoped Package name must not contain any non-url-safe character")
-	}
-
-	if strings.ToLower(pkg) != pkg {
-		return errors.Errorf("Scoped Package name must contain only lowercase charactars")
-	}
-
-	if strings.HasPrefix(pkg, ".") {
-		return errors.Errorf("Scoped Package name must not start with %c character", '.')
-	}
-
-	if matched, err := regexp.MatchString(`[@~\\/!'()*\s]`, pkg); err != nil {
-		return errors.Errorf("Scoped Package name couldn't be checked with regex")
-	} else if matched {
-		return errors.Errorf(`Scoped Package name must not contain any of these special characters: @, ~, \, /, !, ', (, ), *`)
 	}
 
 	return nil

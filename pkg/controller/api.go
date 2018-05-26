@@ -20,7 +20,7 @@ func API(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path
 	switch {
-	case strings.HasPrefix(path, "/api/v1"):
+	case strings.HasPrefix(path, "/api/v1/"):
 		v1.API(w, r)
 	default:
 		Error404(w, r)

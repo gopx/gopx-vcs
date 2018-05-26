@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/Masterminds/semver"
@@ -37,11 +36,8 @@ const (
 	repoTaggerEmail = "gopx@gopx.io"
 )
 
-const gitExportFileName = "git-daemon-export-ok"
+const gitExportRepoFileName = "git-daemon-export-ok"
 
-// The packageName should be:
-//	1. Normal package name e.g. gows
-//	2. Scoped package name e.g. rousan/gows
 func packageExists(packageName string) (bool, error) {
 	rPath, err := packageRepoPath(packageName)
 	if err != nil {
@@ -59,7 +55,7 @@ func initPackageRepo(packageName string) (*git.Repository, error) {
 }
 
 func tempPackageRepoOpsDir(packageName string) (string, error) {
-	prefix := fmt.Sprintf("gopx-package-%s-", strings.Replace(packageName, "/", "-", -1))
+	prefix := fmt.Sprintf("gopx-package-repo-%s-", packageName)
 	return ioutil.TempDir("", prefix)
 }
 
@@ -227,10 +223,10 @@ func exportPackageRepo(packageName string) error {
 		return errors.Wrapf(err, "Unable to calculate package repo path: %s", packageName)
 	}
 
-	exportFile := filepath.Join(rPath, gitExportFileName)
+	exportFile := filepath.Join(rPath, gitExportRepoFileName)
 	file, err := os.Create(exportFile)
 	if err != nil {
-		return errors.Wrapf(err, "Unable to create %s file: %s", gitExportFileName, packageName)
+		return errors.Wrapf(err, "Unable to create %s file: %s", gitExportRepoFileName, packageName)
 	}
 
 	file.Close()
@@ -264,7 +260,7 @@ func resolvePackageRepo(packageName string) error {
 			return errors.Wrapf(err, "Couldn't create corrupted repo backup for package: %s", packageName)
 		}
 
-		os.RemoveAll(filepath.Join(repoCorrPath, gitExportFileName))
+		os.RemoveAll(filepath.Join(repoCorrPath, gitExportRepoFileName))
 	}
 
 	_, err = git.PlainInit(rPath, true)

@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"io/ioutil"
 
@@ -168,17 +167,4 @@ func registerPublicPackage(meta *PackageMeta, data io.Reader) error {
 
 func registerPrivatePackage(meta *PackageMeta, data io.Reader) error {
 	return errors.Errorf("Sorry, private package is not supported yet!")
-}
-
-func splitPackageName(packageName string) (pkg, username string, isScoped bool) {
-	if !strings.HasPrefix(packageName, "@") {
-		return packageName, "", false
-	}
-
-	packageName = strings.TrimPrefix(packageName, "@")
-	idx := strings.Index(packageName, "/")
-	if idx == -1 {
-		return "", packageName, true
-	}
-	return packageName[idx+1:], packageName[:idx], true
 }
