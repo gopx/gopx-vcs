@@ -2,6 +2,7 @@ package route
 
 import (
 	"net/http"
+	"path"
 	"strings"
 
 	"gopx.io/gopx-vcs/pkg/controller"
@@ -17,12 +18,16 @@ func (vr APIRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func processAPIRoute(w http.ResponseWriter, r *http.Request) {
-	r.URL.Path = sanitizeAPIPath(r.URL.Path)
+	r.URL.Path = sanitizeAPIRoute(r.URL.Path)
 	controller.API(w, r)
 }
 
-func sanitizeAPIPath(path string) string {
-	return strings.ToLower(path)
+// Here requested route needs to be converted to lower case,
+// which enables "/ap1/V1" is equivalent to "/ap1/v1" etc.
+// and finally cleans the path e.g. end slashes would be removed from path
+// e.g. "/api/" -> "/api" etc.
+func sanitizeAPIRoute(route string) string {
+	return path.Clean(strings.ToLower(route))
 }
 
 // NewAPIRouter returns a new APIRouter instance.
