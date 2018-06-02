@@ -1,6 +1,7 @@
 package constants
 
+// Constants for environment variable names.
 const (
-	ENV_GOPX_VCS_API_AUTH_USER     = "GOPX_VCS_API_AUTH_USER"
-	ENV_GOPX_VCS_API_AUTH_PASSWORD = "GOPX_VCS_API_AUTH_PASSWORD"
+	EnvGoPXVCSAPIAuthUser     = "GOPX_VCS_API_AUTH_USER"
+	EnvGoPXVSCAPIAuthPassword = "GOPX_VCS_API_AUTH_PASSWORD"
 )
