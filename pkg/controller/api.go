@@ -28,26 +28,29 @@ func API(w http.ResponseWriter, r *http.Request) {
 }
 
 func validateAPIRequest(w http.ResponseWriter, r *http.Request) bool {
-	if user, pass, ok := r.BasicAuth(); ok {
-		if checkAPIAuth(user, pass) {
-			return true
-		}
-		w.WriteHeader(http.StatusForbidden)
-		_, err := io.WriteString(w, "403 Forbidden")
-		utils.LogError(err)
-		return false
-	} else {
+	user, pass, ok := r.BasicAuth()
+
+	if !ok {
 		w.Header().Add("WWW-Authenticate", `Basic realm="Access to the GoPX VCS API service", charset="UTF-8"`)
 		w.WriteHeader(http.StatusUnauthorized)
 		_, err := io.WriteString(w, "401 Unauthorized")
 		utils.LogError(err)
 		return false
 	}
+
+	if !checkAPIAuth(user, pass) {
+		w.WriteHeader(http.StatusForbidden)
+		_, err := io.WriteString(w, "403 Forbidden")
+		utils.LogError(err)
+		return false
+	}
+
+	return true
 }
 
 func checkAPIAuth(username, password string) bool {
-	validUser, isUserSet := os.LookupEnv(constants.ENV_GOPX_VCS_API_AUTH_USER)
-	validPass, isPassSet := os.LookupEnv(constants.ENV_GOPX_VCS_API_AUTH_PASSWORD)
+	validUser, isUserSet := os.LookupEnv(constants.EnvGoPXVCSAPIAuthUser)
+	validPass, isPassSet := os.LookupEnv(constants.EnvGoPXVSCAPIAuthPassword)
 
 	return isUserSet && isPassSet && username == validUser && password == validPass
 }
