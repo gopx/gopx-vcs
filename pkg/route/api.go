@@ -23,7 +23,7 @@ func processAPIRoute(w http.ResponseWriter, r *http.Request) {
 }
 
 // Here requested route needs to be converted to lower case,
-// which enables "/ap1/V1" is equivalent to "/ap1/v1" etc.
+// which enables "/api/V1" is equivalent to "/api/v1" etc.
 // and finally cleans the path e.g. end slashes would be removed from path
 // e.g. "/api/" -> "/api" etc.
 func sanitizeAPIRoute(route string) string {
