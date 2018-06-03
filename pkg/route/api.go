@@ -9,10 +9,10 @@ import (
 	"gopx.io/gopx-vcs/pkg/log"
 )
 
-// APIRouter handles API HTTP routes.
-type APIRouter struct{}
+// GoPXVCSAPIRouter handles GoPX VCS API HTTP routes.
+type GoPXVCSAPIRouter struct{}
 
-func (vr APIRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (vr GoPXVCSAPIRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Info("%s %s", strings.ToUpper(r.Method), r.RequestURI)
 	processAPIRoute(w, r)
 }
@@ -30,7 +30,7 @@ func sanitizeAPIRoute(route string) string {
 	return path.Clean(strings.ToLower(route))
 }
 
-// NewAPIRouter returns a new APIRouter instance.
-func NewAPIRouter() *APIRouter {
-	return &APIRouter{}
+// NewGoPXVCSAPIRouter returns a new GoPXVCSAPIRouter instance.
+func NewGoPXVCSAPIRouter() *GoPXVCSAPIRouter {
+	return &GoPXVCSAPIRouter{}
 }

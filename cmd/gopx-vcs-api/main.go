@@ -25,7 +25,7 @@ func main() {
 
 func startServer() {
 	addr := addr()
-	router := route.NewAPIRouter()
+	router := route.NewGoPXVCSAPIRouter()
 	server := &http.Server{Addr: addr, Handler: router, ErrorLog: serverLogger}
 
 	log.Info("Running API service on: %s", addr)
