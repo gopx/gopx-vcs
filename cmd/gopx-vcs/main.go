@@ -47,16 +47,6 @@ func startServer() {
 	}
 }
 
-func startHTTPS() {
-	addr := httpsAddr()
-	router := route.NewVCSRouter()
-	server := &http.Server{Addr: addr, Handler: router, ErrorLog: serverLogger}
-
-	log.Info("Running HTTPS server on: %s", addr)
-	err := server.ListenAndServeTLS(config.VCSService.CertFile, config.VCSService.KeyFile)
-	log.Fatal("Error: %s", err) // err is always non-nill
-}
-
 func startHTTP() {
 	addr := httpAddr()
 	router := route.NewVCSRouter()
@@ -64,6 +54,16 @@ func startHTTP() {
 
 	log.Info("Running HTTP server on: %s", addr)
 	err := server.ListenAndServe()
+	log.Fatal("Error: %s", err) // err is always non-nill
+}
+
+func startHTTPS() {
+	addr := httpsAddr()
+	router := route.NewVCSRouter()
+	server := &http.Server{Addr: addr, Handler: router, ErrorLog: serverLogger}
+
+	log.Info("Running HTTPS server on: %s", addr)
+	err := server.ListenAndServeTLS(config.VCSService.CertFile, config.VCSService.KeyFile)
 	log.Fatal("Error: %s", err) // err is always non-nill
 }
 
