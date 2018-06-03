@@ -8,15 +8,15 @@ import (
 	"gopx.io/gopx-vcs/pkg/log"
 )
 
-// VCSRouter handles VCS HTTP routes.
-type VCSRouter struct{}
+// GoPXVCSRouter handles GoPX VCS HTTP routes.
+type GoPXVCSRouter struct{}
 
-func (vr VCSRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (vr GoPXVCSRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Info("%s %s", strings.ToUpper(r.Method), r.RequestURI)
 	controller.VCS(w, r)
 }
 
-// NewVCSRouter returns a new VCSRouter instance.
-func NewVCSRouter() *VCSRouter {
-	return &VCSRouter{}
+// NewGoPXVCSRouter returns a new GoPXVCSRouter instance.
+func NewGoPXVCSRouter() *GoPXVCSRouter {
+	return &GoPXVCSRouter{}
 }

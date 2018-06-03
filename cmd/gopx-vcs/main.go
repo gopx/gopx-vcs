@@ -49,7 +49,7 @@ func startServer() {
 
 func startHTTP() {
 	addr := httpAddr()
-	router := route.NewVCSRouter()
+	router := route.NewGoPXVCSRouter()
 	server := &http.Server{Addr: addr, Handler: router, ErrorLog: serverLogger}
 
 	log.Info("Running HTTP server on: %s", addr)
@@ -59,7 +59,7 @@ func startHTTP() {
 
 func startHTTPS() {
 	addr := httpsAddr()
-	router := route.NewVCSRouter()
+	router := route.NewGoPXVCSRouter()
 	server := &http.Server{Addr: addr, Handler: router, ErrorLog: serverLogger}
 
 	log.Info("Running HTTPS server on: %s", addr)
