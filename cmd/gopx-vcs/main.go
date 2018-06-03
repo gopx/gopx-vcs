@@ -1,7 +1,7 @@
 package main
 
 import (
-	l "log"
+	golog "log"
 	"net"
 	"net/http"
 	"os"
@@ -13,7 +13,7 @@ import (
 	"gopx.io/gopx-vcs/pkg/route"
 )
 
-var serverLogger = l.New(os.Stdout, "", l.Ldate|l.Ltime|l.Lshortfile)
+var serverLogger = golog.New(os.Stdout, "", golog.Ldate|golog.Ltime|golog.Lshortfile)
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
