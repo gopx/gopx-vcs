@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"gopx.io/gopx-vcs/pkg/log"
+	"gopx.io/gopx-common/log"
 )
 
 // VCSConfigPath holds vcs related configuration file path.

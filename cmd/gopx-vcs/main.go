@@ -7,9 +7,10 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"time"
 
+	"gopx.io/gopx-common/log"
 	"gopx.io/gopx-vcs/pkg/config"
-	"gopx.io/gopx-vcs/pkg/log"
 	"gopx.io/gopx-vcs/pkg/route"
 )
 
@@ -21,56 +22,62 @@ func init() {
 
 func main() {
 	startServer()
-	// test()
-}
-
-func test() {
-	// repo, err := git.PlainOpen("/tmp/abc")
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-
-	// v1.VcsRepoCreateTag("1.0.8", &object.Signature{}, "adad", repo)
 }
 
 func startServer() {
 	switch {
-	case config.VCSService.UseHTTP && config.VCSService.UseHTTPS:
+	case config.Service.UseHTTP && config.Service.UseHTTPS:
 		go startHTTP()
 		startHTTPS()
-	case config.VCSService.UseHTTP:
+	case config.Service.UseHTTP:
 		startHTTP()
-	case config.VCSService.UseHTTPS:
+	case config.Service.UseHTTPS:
 		startHTTPS()
 	default:
-		log.Fatal("Error: no listener is specified in VCS service config file")
+		log.Fatal("Error: no listener is specified in service config file")
 	}
 }
 
 func startHTTP() {
 	addr := httpAddr()
-	router := route.NewGoPXVCSRouter()
-	server := &http.Server{Addr: addr, Handler: router, ErrorLog: serverLogger}
+	r := route.Router()
+	server := &http.Server{
+		Addr:              addr,
+		Handler:           r,
+		ReadTimeout:       config.Service.ReadTimeout * time.Second,
+		ReadHeaderTimeout: config.Service.ReadTimeout * time.Second,
+		WriteTimeout:      config.Service.WriteTimeout * time.Second,
+		IdleTimeout:       config.Service.IdleTimeout * time.Second,
+		ErrorLog:          serverLogger,
+	}
 
-	log.Info("Running HTTP server on: %s", addr)
+	log.Info("GoPx VCS service is running on: %s [HTTP]", addr)
 	err := server.ListenAndServe()
 	log.Fatal("Error: %s", err) // err is always non-nill
 }
 
 func startHTTPS() {
 	addr := httpsAddr()
-	router := route.NewGoPXVCSRouter()
-	server := &http.Server{Addr: addr, Handler: router, ErrorLog: serverLogger}
+	r := route.Router()
+	server := &http.Server{
+		Addr:              addr,
+		Handler:           r,
+		ReadTimeout:       config.Service.ReadTimeout * time.Second,
+		ReadHeaderTimeout: config.Service.ReadTimeout * time.Second,
+		WriteTimeout:      config.Service.WriteTimeout * time.Second,
+		IdleTimeout:       config.Service.IdleTimeout * time.Second,
+		ErrorLog:          serverLogger,
+	}
 
-	log.Info("Running HTTPS server on: %s", addr)
-	err := server.ListenAndServeTLS(config.VCSService.CertFile, config.VCSService.KeyFile)
+	log.Info("GoPx VCS service is running on: %s [HTTPS]", addr)
+	err := server.ListenAndServeTLS(config.Service.CertFile, config.Service.KeyFile)
 	log.Fatal("Error: %s", err) // err is always non-nill
 }
 
 func httpAddr() string {
-	return net.JoinHostPort(config.VCSService.Host, strconv.Itoa(config.VCSService.HTTPPort))
+	return net.JoinHostPort(config.Service.Host, strconv.Itoa(config.Service.HTTPPort))
 }
 
 func httpsAddr() string {
-	return net.JoinHostPort(config.VCSService.Host, strconv.Itoa(config.VCSService.HTTPSPort))
+	return net.JoinHostPort(config.Service.Host, strconv.Itoa(config.Service.HTTPSPort))
 }
